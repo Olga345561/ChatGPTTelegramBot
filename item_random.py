@@ -46,9 +46,6 @@ async def random_fact(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Відправляємо результат
         await send_text_buttons(update, context, f"*Випадковий факт:*\n\n{fact}", RANDOM_BUTTONS)
 
-        # Видаляємо повідомлення про очікування
-        #await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=update.message.message_id)
-
     except Exception as e:
         logger.error(f"Помилка при отримані випадкового факту: {e}")
         # Надсилаєм повідомлення про помилку

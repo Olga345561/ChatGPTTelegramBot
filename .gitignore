@@ -80,8 +80,8 @@ celerybeat-schedule
 # dotenv
 ../.env
 .env.local
-resources/.env
-resources/.env
+.env
+.env
 
 
 

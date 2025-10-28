@@ -77,3 +77,6 @@ async def send_text_buttons(update: Update, context: ContextTypes.DEFAULT_TYPE,
         update.effective_message.chat.id,
         text=text, reply_markup=reply_markup,
         message_thread_id=update.effective_message.message_thread_id)
+
+class Dialog:
+    pass
