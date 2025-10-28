@@ -6,6 +6,10 @@ RANDOM_BUTTONS = {
     'start': 'Закінчити'
 }
 
+QUESTION_BUTTONS = {
+    'start': 'Закінчити'
+}
+
 MAIN_MENU_BUTTONS = {
     'start': 'Головне меню',
     'random': 'Дізнатися випадковий факт',

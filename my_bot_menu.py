@@ -3,7 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 from credentials import BOT_TOKEN
 from menu_handler import start
 from item_random import random_fact, random_fact_button_handler, error_handler
-from item_question import gpt_handler,  gpt_question_response, error_gpt
+from item_question import gpt_handler,  gpt_question_response, error_gpt, end_conversation_button
 
 # створення додатку
 app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -20,6 +20,7 @@ app.add_handler(CommandHandler('gpt', gpt_handler))
 # Всі повідомлення тексту — передаються у ChatGPT (якщо користувач у стані 'gpt')
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, gpt_question_response))
 app.add_error_handler(error_gpt)
+app.add_handler(CallbackQueryHandler(end_conversation_button, pattern="^start$"))
 
 # запуск
 app.run_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
