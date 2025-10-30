@@ -6,11 +6,9 @@ from credentials import ChatGPT_TOKEN
 import logging
 from menu_handler import start
 from item_buttons import RANDOM_BUTTONS, get_keyboard
-from telegram.error import Conflict, NetworkError
 
 chat_gpt = ChatGptService(ChatGPT_TOKEN)
 
-#send_image, send_text, send_text_buttons, load_prompt, chat_gpt,
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     level=logging.INFO
@@ -68,13 +66,7 @@ async def random_fact_button_handler(update: Update, context: ContextTypes.DEFAU
         # Якщо натиснути кнопку "Закінчити"
         await start(update, context)
 
-# Обробник помилок для бота
-async def error_handler(update, context):
-    logger.error(f"Помилка під час обробки оновлення: {context.error}")
-    if isinstance(context.error, Conflict):
-        logger.error("Конфлікт: інший екземпляр цього бота вже запущено. Переконайтесь, що працює лише один екземпляр.")
-    elif isinstance(context.error, NetworkError):
-        logger.error(f"Помилка мережі: {context.error}")
+
 
 
 

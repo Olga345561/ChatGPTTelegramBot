@@ -79,13 +79,7 @@ async def end_conversation_button(update: Update, context: ContextTypes.DEFAULT_
     context.user_data['conversation_state'] = None
     await start(update, context)
 
-# Обробник помилок для бота
-async def error_gpt(update, context):
-    logger.error(f"Помилка під час обробки оновлення: {context.error}")
-    if isinstance(context.error, Conflict):
-        logger.error("Конфлікт: інший екземпляр цього бота вже запущено. Переконайтесь, що працює лише один екземпляр.")
-    elif isinstance(context.error, NetworkError):
-        logger.error(f"Помилка мережі: {context.error}")
+
 
 
 
