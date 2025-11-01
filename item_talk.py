@@ -4,7 +4,7 @@ from util import (send_text, load_prompt, send_image, send_text_buttons)
 from gpt import ChatGptService
 from credentials import ChatGPT_TOKEN
 import logging
-from item_buttons import get_keyboard, PERSON_BUTTONS
+from item_buttons import get_keyboard, PERSON_BUTTONS, TALK_CONTINUE_BUTTONS
 from menu_handler import start
 #from messages_random import interpret_random_input, show_funny_response
 chat_gpt = ChatGptService(ChatGPT_TOKEN)
@@ -51,7 +51,6 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Якщо намір не визначено, показуємо кумедну відповідь
         if not intent_recognized:
             await show_funny_response(update, context)
-
         return
 
     # Обробка питання до ChatGPT
@@ -94,17 +93,24 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             # Видаляємо повідомлення про очікування
             await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=waiting_message.message_id)
 
-            # Створюємо кнопку "Закінчити"
-            buttons = {'start': 'Закінчити'}
+            # Кнопки після відповіді: "Закінчити" та "Вибрати іншу особистість"
+            TALK_CONTINUE_BUTTONS = {
+                'talk_change': 'Вибрати іншу особистість',
+                'start': 'Закінчити'
+            }
 
-            # Надсилаємо відповідь користувачу з кнопкою
             personality_name = personality.replace('talk_', '').capitalize()
-            await send_text_buttons(update, context, f"👤 *{personality_name}:*\n\n{response}", buttons)
+            await send_text_buttons(
+                update,
+                context,
+                f"*{personality_name}:*\n\n{response}",
+                TALK_CONTINUE_BUTTONS
+            )
 
         except Exception as e:
             logger.error(f"Помилка при отриманні відповіді від ChatGPT: {e}")
-            await send_text(update, context, "На жаль, виникла помилка при отриманні відповіді. Спробуйте ще раз пізніше.")
-            # Видаляємо повідомлення про очікування в разі помилки
+            await send_text(update, context,
+                            "На жаль, виникла помилка при отриманні відповіді. Спробуйте ще раз пізніше.")
             await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=waiting_message.message_id)
 
 # Обробник колбеків для діалогу з відомими особистостями
@@ -120,6 +126,11 @@ async def talk_button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE
         context.user_data.pop('conversation_state', None)
         context.user_data.pop('selected_personality', None)
         await start(update, context)
+        return
+
+    # Якщо натиснуто кнопку "Вибрати іншу особистість"
+    if data == 'talk_change':
+        await talk_handler(update, context)  # повертаємо користувача до списку персон
         return
 
     # Перевіряємо, чи це вибір особистості

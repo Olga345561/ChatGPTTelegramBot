@@ -8,6 +8,7 @@ from item_talk import talk_handler, talk_button_handler
 from item_error_gpt import error_gpt
 from item_quiz import quiz_handler, quiz_topic_handler, quiz_callback_handler
 from message_router import message_router
+from item_translator import translator_message_handler, translator_button_handler
 
 # створення додатку
 app = ApplicationBuilder().token(BOT_TOKEN).build()
@@ -26,6 +27,10 @@ app.add_handler(CallbackQueryHandler(talk_button_handler, pattern="^talk_|^start
 app.add_handler(CommandHandler('quiz', quiz_handler))
 app.add_handler(CallbackQueryHandler(quiz_topic_handler, pattern="^topic_"))
 app.add_handler(CallbackQueryHandler(quiz_callback_handler, pattern="^(quiz_next|quiz_change|quiz_end)$"))
+
+app.add_handler(CommandHandler("translator", translator_message_handler))
+app.add_handler(CallbackQueryHandler(translator_button_handler, pattern="^lang_|^translator_change$|^start$"))
+app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), translator_message_handler))
 
 # Єдиний маршрутизатор для всіх текстових повідомлень
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, message_router))

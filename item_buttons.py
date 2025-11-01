@@ -28,6 +28,10 @@ PERSON_BUTTONS = {
     'talk_einstein': 'Альберт Енштейн',
     'start': 'Закінчити'
 }
+TALK_CONTINUE_BUTTONS = {
+    'talk_change': 'Вибрати іншу особистість',
+    'start': 'Закінчити'
+}
 
 #Кнопки для квізу
 QUIZ_BUTTONS = {
@@ -47,6 +51,20 @@ QUIZ_ACTION_BUTTONS = {
 
 # Кнопка виходу в меню
 QUIZ_EXIT_BUTTONS = {
+    'start': 'Закінчити'
+}
+# Кнопки мов
+LANG_BUTTONS = {
+    'lang_en': 'Англійська',
+    'lang_es': 'Іспанська',
+    'lang_fr': 'Французька',
+    'lang_de': 'Німецька',
+    'start': 'Закінчити'
+}
+
+# Кнопки після перекладу
+TRANSLATE_CONTINUE_BUTTONS = {
+    'translator_change': 'Змінити мову',
     'start': 'Закінчити'
 }
 
