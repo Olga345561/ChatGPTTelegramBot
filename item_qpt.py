@@ -49,27 +49,49 @@ async def gpt_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 #Обробник повідомлень користувача (відповідь GPT на запитання користувача)
 async def gpt_question_response(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    #Перевіряємо, що користувач у мережі GPT
-    if context.user_data.get('conversation_state') == 'gpt':
-        user_text = update.message.text.strip()
+    if context.user_data.get('conversation_state') != 'gpt':
+        return
 
-        try:
-            # Завантажуємо системний prompt
-            prompt = load_prompt('question_txt')
-            # Передаємо контекст у ChatGPT
-            chat_gpt.set_prompt(prompt)
-            # Отримуємо відповідь
-            response = await chat_gpt.send_question(prompt, user_text)
+    user_text = update.message.text.strip()
 
-            # Клавіатура з кнопкою "Закінчити"
-            keyboard = get_keyboard(QUESTION_BUTTONS)
+    # Відправляємо повідомлення про очікування
+    waiting_message = await send_text(update, context, "🔍 Обробляю ваше питання...")
 
-            await send_text_buttons(update, context, f"Відповідь:\n\n{response}", QUESTION_BUTTONS)
+    try:
+        # Завантажуємо системний prompt
+        prompt = load_prompt('question_txt')
+        chat_gpt.set_prompt(prompt)
 
+        # Отримуємо відповідь від GPT
+        response = await chat_gpt.send_question(prompt, user_text)
 
-        except Exception as e:
-            logger.error(f"Помилка при запиті до ChatGPT{e}")
-            await send_text(update, context, "Не вдалося отримати відповідь. Спробуйте пізніше.")
+        # Видаляємо повідомлення очікування, тільки якщо воно існує і має message_id
+        if waiting_message and hasattr(waiting_message, "message_id"):
+            try:
+                await context.bot.delete_message(
+                    chat_id=update.effective_chat.id,
+                    message_id=waiting_message.message_id
+                )
+            except Exception as e:
+                logger.warning(f"Не вдалося видалити повідомлення очікування: {e}")
+
+        # Відправляємо відповідь користувачу з кнопками
+        await send_text_buttons(update, context, f"Відповідь:\n\n{response}", QUESTION_BUTTONS)
+
+    except Exception as e:
+        logger.error(f"Помилка при запиті до ChatGPT: {e}")
+
+        # Видаляємо повідомлення очікування у разі помилки, якщо воно існує
+        if waiting_message and hasattr(waiting_message, "message_id"):
+            try:
+                await context.bot.delete_message(
+                    chat_id=update.effective_chat.id,
+                    message_id=waiting_message.message_id
+                )
+            except Exception as e2:
+                logger.warning(f"Не вдалося видалити повідомлення очікування після помилки: {e2}")
+
+        await send_text(update, context, "Не вдалося отримати відповідь. Спробуйте пізніше.")
 
 # === Обробник натискання кнопки “Закінчити” ===
 async def end_conversation_button(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -78,24 +100,3 @@ async def end_conversation_button(update: Update, context: ContextTypes.DEFAULT_
 
     context.user_data['conversation_state'] = None
     await start(update, context)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

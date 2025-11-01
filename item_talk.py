@@ -6,7 +6,7 @@ from credentials import ChatGPT_TOKEN
 import logging
 from item_buttons import get_keyboard, PERSON_BUTTONS
 from menu_handler import start
-from messages_random import interpret_random_input, show_funny_response
+#from messages_random import interpret_random_input, show_funny_response
 chat_gpt = ChatGptService(ChatGPT_TOKEN)
 
 logging.basicConfig(
@@ -41,9 +41,11 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Перевіряємо поточний стан розмови
     conversation_state = context.user_data.get('conversation_state')
 
+    from messages_random import interpret_random_input, show_funny_response
+
     # Якщо стан розмови не визначено (випадкове повідомлення)
     if not conversation_state:
-        # Спробуємо інтерпретувати намір користувача
+        # Інтерпретуємо намір користувача
         intent_recognized = await interpret_random_input(update, context, message_text)
 
         # Якщо намір не визначено, показуємо кумедну відповідь

@@ -29,6 +29,27 @@ PERSON_BUTTONS = {
     'start': 'Закінчити'
 }
 
+#Кнопки для квізу
+QUIZ_BUTTONS = {
+    'topic_history': 'Історія',
+    'topic_science': 'Наука',
+    'topic_movies': 'Кіно',
+    'topic_music': 'Музика',
+    'topic_tech': 'Технології'
+}
+
+#Кнопки піля відповіді
+QUIZ_ACTION_BUTTONS = {
+    'quiz_next': 'Наступне питання',
+    'quiz_change':'Змінити тему',
+    'quiz_end':'Завершити квіз'
+}
+
+# Кнопка виходу в меню
+QUIZ_EXIT_BUTTONS = {
+    'start': 'Закінчити'
+}
+
 # функція для створення клавіатури
 def get_keyboard(buttons_dict):
     keyboard = [
